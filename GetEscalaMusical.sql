@@ -1,4 +1,4 @@
-ALTER PROCEDURE GetEscalaMusical (
+CREATE PROCEDURE GetEscalaMusical (
     IN in_Tom NVARCHAR(5),
     IN in_Escala NVARCHAR(50)
 )
