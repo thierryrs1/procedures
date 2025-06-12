@@ -1,4 +1,4 @@
-CREATE PROCEDURE GetEscalaMusical (
+ALTER PROCEDURE GetEscalaMusical (
     IN in_Tom NVARCHAR(5),
     IN in_Escala NVARCHAR(50)
 )
@@ -44,16 +44,43 @@ BEGIN
     SELECT
         ROW_NUMBER() OVER(ORDER BY i."Ordem") as "ID",
         n2."Nota",
-        CASE i."Ordem"
-            WHEN 0 THEN 'Tônica'
-            WHEN 1 THEN 'Segundo Grau'
-            WHEN 2 THEN 'Terceiro Grau'
-            WHEN 3 THEN 'Quarto Grau'
-            WHEN 4 THEN 'Quinto Grau'
-            WHEN 5 THEN 'Sexto Grau'
-            WHEN 6 THEN 'Sétimo Grau'
-            ELSE 'Grau Adicional'
-        END AS Grau
+		CASE 
+		    WHEN in_Escala IN ('Maior', 'Jônio') THEN
+		        CASE i."Ordem"
+		            WHEN 0 THEN 'Tônica'
+		            WHEN 1 THEN 'Segunda maior'
+		            WHEN 2 THEN 'Terça maior'
+		            WHEN 3 THEN 'Quarta justa'
+		            WHEN 4 THEN 'Quinta justa'
+		            WHEN 5 THEN 'Sexta maior'
+		            WHEN 6 THEN 'Sétima maior'
+		            ELSE 'Grau Adicional'
+		        END
+		    WHEN in_Escala IN ('Menor', 'Eólio') THEN
+		        CASE i."Ordem"
+		            WHEN 0 THEN 'Tônica'
+		            WHEN 1 THEN 'Segunda maior'
+		            WHEN 2 THEN 'Terça menor'
+		            WHEN 3 THEN 'Quarta justa'
+		            WHEN 4 THEN 'Quinta justa'
+		            WHEN 5 THEN 'Sexta menor'
+		            WHEN 6 THEN 'Sétima menor'
+		            ELSE 'Grau Adicional'
+		        END
+		    WHEN in_Escala = 'Menor Harmonica' THEN
+		        CASE i."Ordem"
+		            WHEN 0 THEN 'Tônica'
+		            WHEN 1 THEN 'Segunda maior'
+		            WHEN 2 THEN 'Terça menor'
+		            WHEN 3 THEN 'Quarta justa'
+		            WHEN 4 THEN 'Quinta justa'
+		            WHEN 5 THEN 'Sexta menor'
+		            WHEN 6 THEN 'Sétima maior'
+		            ELSE 'Grau Adicional'
+		        END
+		    -- Adiciona mais escalas aqui conforme necessário
+		    ELSE 'Grau'
+		END AS Grau
     FROM :intervalos i
     JOIN "Notas" n2 
         ON n2."ID" = MOD(:baseID - 1 + i."Semitom", 12) + 1
